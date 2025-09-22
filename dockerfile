@@ -1,35 +1,38 @@
-# Dockerfile (multi-stage, production-ready)
-
-### Stage 1 — builder: install all deps and build the admin
-FROM node:18-alpine AS builder
+# ============================
+# Stage 1 — Build Strapi Admin
+# ============================
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# copy package files first for layer caching
-COPY package*.json ./
+# Copy package files first for better caching
+COPY package.json package-lock.json ./
 
-# If your package-lock.json is in sync you can use npm ci otherwise use npm install
-RUN npm ci || npm install
+# Install dependencies
+RUN npm ci
 
-# copy source
+# Copy source code
 COPY . .
 
-# build the admin panel for production
+# Build Strapi Admin Panel
 ENV NODE_ENV=production
 RUN npm run build
 
-### Stage 2 — runner: runtime image with only production deps
-FROM node:18-alpine AS runner
+# ============================
+# Stage 2 — Production Runner
+# ============================
+FROM node:18-alpine AS prod
 WORKDIR /app
 
-# copy only package metadata, install production-only deps
-COPY package*.json ./
-RUN npm ci --only=production || npm install --omit=dev
+# Copy only package files & install production deps
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-# copy built app from builder
-COPY --from=builder /app ./
+# Copy build output & source from build stage
+COPY --from=build /app ./
 
-# Ensure the Strapi server binds to 0.0.0.0
+# Ensure Strapi binds correctly
 ENV NODE_ENV=production
 EXPOSE 1337
 
+# Start Strapi in production mode
 CMD ["npm", "run", "start"]
