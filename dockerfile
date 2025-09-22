@@ -1,36 +1,24 @@
-# ---------- Stage 1: Build ----------
+# Stage 1: Build
 FROM node:18-alpine AS builder
-
 WORKDIR /app
 
-# Install build tools for Alpine
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache bash git python3 make g++ libc6-compat
 
-# Copy package files
-COPY my-strapi-app/package*.json ./
-
-# Install all dependencies
+# copy package.json only
+COPY package*.json ./
 RUN npm install
 
-# Copy project files
-COPY my-strapi-app/ ./
-
-# Build Strapi admin panel
+# copy all source code
+COPY . ./
 RUN npm run build
 
-
-# ---------- Stage 2: Production ----------
+# Stage 2: Production
 FROM node:18-alpine AS runner
-
 WORKDIR /app
+RUN apk add --no-cache dumb-init
 
-# Copy only required files from builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# copy from builder
 COPY --from=builder /app ./
 
-# Expose Strapi port
 EXPOSE 1337
-
-# Start Strapi
-CMD ["npm", "run", "start"]
+CMD ["dumb-init", "npm", "run", "start"]
