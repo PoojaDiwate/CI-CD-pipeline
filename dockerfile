@@ -1,38 +1,28 @@
-# ============================
-# Stage 1 — Build Strapi Admin
-# ============================
-FROM node:18-alpine AS build
+# Stage 1 — Builder
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package files first for better caching
-COPY package.json package-lock.json ./
+# copy package files from my-strapi-app folder
+COPY my-strapi-app/package*.json ./
 
-# Install dependencies
-RUN npm ci
+RUN npm ci || npm install
 
-# Copy source code
-COPY . .
+# copy source code
+COPY my-strapi-app/ ./
 
-# Build Strapi Admin Panel
+# build
 ENV NODE_ENV=production
 RUN npm run build
 
-# ============================
-# Stage 2 — Production Runner
-# ============================
-FROM node:18-alpine AS prod
+# Stage 2 — Runner
+FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Copy only package files & install production deps
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+COPY my-strapi-app/package*.json ./
+RUN npm ci --only=production || npm install --omit=dev
 
-# Copy build output & source from build stage
-COPY --from=build /app ./
+COPY --from=builder /app ./  
 
-# Ensure Strapi binds correctly
 ENV NODE_ENV=production
 EXPOSE 1337
-
-# Start Strapi in production mode
 CMD ["npm", "run", "start"]
