@@ -1,46 +1,35 @@
-# =========================
-# Stage 1 - Build Strapi
-# =========================
-FROM node:18-alpine AS build
+# Dockerfile (multi-stage, production-ready)
 
-# Set working directory
+### Stage 1 — builder: install all deps and build the admin
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package files first (better caching)
-COPY package.json yarn.lock ./
+# copy package files first for layer caching
+COPY package*.json ./
 
-# Install dependencies
-RUN yarn install
+# If your package-lock.json is in sync you can use npm ci otherwise use npm install
+RUN npm ci || npm install
 
-# Copy all project files
+# copy source
 COPY . .
 
-# Build Strapi for production
-RUN yarn build
+# build the admin panel for production
+ENV NODE_ENV=production
+RUN npm run build
 
-# =========================
-# Stage 2 - Production Image
-# =========================
-FROM node:18-alpine AS production
-
-# Set working directory
+### Stage 2 — runner: runtime image with only production deps
+FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Copy only necessary files from build stage
-COPY --from=build /app/package.json ./
-COPY --from=build /app/yarn.lock ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/build ./build
-COPY --from=build /app/.cache ./.cache
-COPY --from=build /app/config ./config
-COPY --from=build /app/src ./src
-COPY --from=build /app/public ./public
+# copy only package metadata, install production-only deps
+COPY package*.json ./
+RUN npm ci --only=production || npm install --omit=dev
 
-# Expose Strapi port
+# copy built app from builder
+COPY --from=builder /app ./
+
+# Ensure the Strapi server binds to 0.0.0.0
+ENV NODE_ENV=production
 EXPOSE 1337
 
-# Set environment variables for production
-ENV NODE_ENV=production
-
-# Start Strapi
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]
