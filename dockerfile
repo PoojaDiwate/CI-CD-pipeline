@@ -3,16 +3,19 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# copy package files from subfolder
+# Install build tools for Alpine
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
 COPY my-strapi-app/package*.json ./
 
-# install dependencies
+# Install all dependencies
 RUN npm install
 
-# copy all source code
+# Copy project files
 COPY my-strapi-app/ ./
 
-# build Strapi admin panel for production
+# Build Strapi admin panel
 RUN npm run build
 
 
@@ -21,17 +24,13 @@ FROM node:18-alpine AS runner
 
 WORKDIR /app
 
-# copy only necessary files (no dev deps)
-COPY my-strapi-app/package*.json ./
-
-# install only production dependencies
-RUN npm install --omit=dev
-
-# copy built files from builder (without node_modules)
+# Copy only required files from builder
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app ./
 
-# expose Strapi default port
+# Expose Strapi port
 EXPOSE 1337
 
-# run in production mode
+# Start Strapi
 CMD ["npm", "run", "start"]
