@@ -28,10 +28,7 @@ COPY my-strapi-app/package*.json ./
 RUN npm install --omit=dev
 
 # copy built files from builder (without node_modules)
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/public ./public
+COPY --from=builder /app ./
 
 # run in production mode
 CMD ["npm", "run", "start"]
