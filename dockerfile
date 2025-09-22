@@ -30,5 +30,8 @@ RUN npm install --omit=dev
 # copy built files from builder (without node_modules)
 COPY --from=builder /app ./
 
+# expose Strapi default port
+EXPOSE 1337
+
 # run in production mode
 CMD ["npm", "run", "start"]
