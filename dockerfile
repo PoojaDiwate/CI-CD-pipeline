@@ -1,28 +1,38 @@
-# Stage 1 — Builder
+# ---------- Stage 1: Build ----------
 FROM node:18-alpine AS builder
+
 WORKDIR /app
 
-# copy package files from my-strapi-app folder
-COPY my-strapi-app/package*.json ./
+# copy package files first
+COPY package*.json ./
 
-RUN npm ci || npm install
+# install dependencies
+RUN npm install
 
-# copy source code
-COPY my-strapi-app/ ./
+# copy all source code
+COPY . .
 
-# build
-ENV NODE_ENV=production
+# build Strapi admin panel for production
 RUN npm run build
 
-# Stage 2 — Runner
+
+# ---------- Stage 2: Production ----------
 FROM node:18-alpine AS runner
+
 WORKDIR /app
 
-COPY my-strapi-app/package*.json ./
-RUN npm ci --only=production || npm install --omit=dev
+# copy only necessary files (no dev deps)
+COPY package*.json ./
 
-COPY --from=builder /app ./  
+# install only production dependencies
+RUN npm install --omit=dev
 
-ENV NODE_ENV=production
-EXPOSE 1337
+# copy build output + source (but not node_modules from builder)
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/public ./public
+
+# run in production mode
 CMD ["npm", "run", "start"]
+
