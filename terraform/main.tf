@@ -6,14 +6,15 @@ data "aws_vpc" "existing" {
   id = "vpc-098cc44dc4ec933d7"  # replace with your chosen VPC ID
 }
 
-resource "aws_subnet" "public" {
-  vpc_id                  = data.aws_vpc.existing.id
-  cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+data "aws_subnet_ids" "existing" {
+  vpc_id = "vpc-098cc44dc4ec933d7"
 }
 
-resource "aws_internet_gateway" "gw" {
-  vpc_id = data.aws_vpc.existing.id
+data "aws_internet_gateway" "existing" {
+  filter {
+    name   = "attachment.vpc-id"
+    values = ["vpc-098cc44dc4ec933d7"]
+  }
 }
 
 resource "aws_route_table" "public" {
@@ -58,7 +59,7 @@ resource "aws_security_group" "strapi_sg" {
 resource "aws_instance" "strapi_server_pooja" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public.id
+  subnet_id              = data.aws_subnet_ids.existing.ids[0]
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
   key_name               = var.keypair
 
