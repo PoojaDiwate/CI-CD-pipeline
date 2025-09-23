@@ -20,7 +20,7 @@ variable "ecr_repo" {
 }
 
 variable "image_tag" {
-  description = "Image tag from GitHub Actions (commit SHA)"
+  description = "Image tag from GitHub Actions"
 }
 
 variable "keypair" {
