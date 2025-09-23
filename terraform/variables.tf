@@ -23,10 +23,8 @@ variable "image_tag" {
   description = "Image tag from GitHub Actions (commit SHA)"
 }
 
-variable "ssh_public_key" {
-  description = "EC2 SSH public key"
-}
-
-variable "key_name" {
-  description = "Name of the SSH key pair"
+variable "keypair" {
+  description = "Name of the existing EC2 SSH key pair"
+  type        = string
+  default     = "strapi_key_pooja"  # the name of your already created key pair
 }

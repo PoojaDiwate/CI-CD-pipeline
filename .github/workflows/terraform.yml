@@ -33,7 +33,6 @@ jobs:
           -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
           -var="image_tag=${{ github.event.inputs.image_tag }}" \
-          -var="ssh_public_key=${{ secrets.EC2_SSH_PUBLIC_KEY }}" \
           -out=tfplan
 
 
