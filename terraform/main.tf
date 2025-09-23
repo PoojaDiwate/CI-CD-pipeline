@@ -78,6 +78,6 @@ resource "aws_instance" "strapi_server_pooja" {
               EOF
 
   tags = {
-    Name = "Strapi-Server"
+    Name = "Strapi-Server-Pooja"
   }
 }
