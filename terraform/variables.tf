@@ -7,12 +7,7 @@ variable "ami_id" {
 }
 
 variable "instance_type" {
-  default = "t3.micro"
-}
-
-variable "key_name" {
-  description = "EC2 key pair name for SSH"
-  default     = "strapi_key_pooja"
+  default = "t2.micro"
 }
 
 variable "aws_account_id" {
@@ -25,4 +20,12 @@ variable "ecr_repo" {
 
 variable "image_tag" {
   description = "Image tag from GitHub Actions (commit SHA)"
+}
+
+variable "ssh_public_key" {
+  description = "EC2 SSH public key"
+}
+
+variable "key_name" {
+  description = "Name of the SSH key pair"
 }

@@ -27,7 +27,7 @@ jobs:
         run: terraform -chdir=terraform init
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" -var="ecr_repo=${{ secrets.ECR_REPO }}" -var="image_tag=${{ env.image_tag }}" -out=tfplan
+        run: terraform -chdir=terraform plan -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" -var="ecr_repo=${{ secrets.ECR_REPO }}" -var="image_tag=${{ env.image_tag }}" -var="ssh_public_key=${{ secrets.EC2_SSH_PUBLIC_KEY }}" -out=tfplan
 
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve tfplan
