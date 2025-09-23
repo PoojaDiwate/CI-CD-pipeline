@@ -2,23 +2,30 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Use existing VPC
 data "aws_vpc" "existing" {
-  id = "vpc-098cc44dc4ec933d7"  # replace with your chosen VPC ID
+  id = "vpc-098cc44dc4ec933d7"  # replace with your VPC ID
 }
 
-data "aws_subnet_ids" "existing" {
-  vpc_id = "vpc-098cc44dc4ec933d7"
-}
-
-data "aws_internet_gateway" "existing" {
+# Use existing subnets
+data "aws_subnets" "existing" {
   filter {
-    name   = "attachment.vpc-id"
-    values = ["vpc-098cc44dc4ec933d7"]
+    name   = "vpc-id"
+    values = [data.aws_vpc.existing.id]
   }
 }
 
+# Use existing Internet Gateway
+data "aws_internet_gateway" "existing" {
+  filter {
+    name   = "attachment.vpc-id"
+    values = [data.aws_vpc.existing.id]
+  }
+}
+
+# Route table
 resource "aws_route_table" "public" {
-  vpc_id = data.aws_internet_gateway.existing.vpc_id
+  vpc_id = data.aws_vpc.existing.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -26,11 +33,13 @@ resource "aws_route_table" "public" {
   }
 }
 
+# Associate route table with first existing subnet
 resource "aws_route_table_association" "public" {
-  subnet_id      = data.aws_subnet_ids.existing.ids[0]
+  subnet_id      = data.aws_subnets.existing.ids[0]
   route_table_id = aws_route_table.public.id
 }
 
+# Security Group
 resource "aws_security_group" "strapi_sg" {
   vpc_id = data.aws_vpc.existing.id
 
@@ -56,12 +65,13 @@ resource "aws_security_group" "strapi_sg" {
   }
 }
 
+# EC2 Instance
 resource "aws_instance" "strapi_server_pooja" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnet_ids.existing.ids[0]
+  subnet_id              = data.aws_subnets.existing.ids[0]
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
-  key_name               = var.keypair
+  key_name               = var.keypair  # your key pair variable
 
    user_data = <<-EOF
               #!/bin/bash
