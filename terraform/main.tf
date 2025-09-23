@@ -60,7 +60,7 @@ resource "aws_instance" "strapi_server_pooja" {
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
-  key_name               = keypair
+  key_name               = var.keypair
 
    user_data = <<-EOF
               #!/bin/bash
