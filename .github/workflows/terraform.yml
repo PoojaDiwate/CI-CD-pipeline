@@ -2,10 +2,6 @@ name: Terraform Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      image_tag:
-        description: "Docker image tag to deploy"
-        required: true
 
 jobs:
   terraform:
@@ -37,7 +33,6 @@ jobs:
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
           -var="image_tag=${{ github.event.inputs.image_tag }}" \
           -var="ssh_public_key=${{ secrets.EC2_SSH_PUBLIC_KEY }}" \
-          -var="key_name=strapi_key_pooja" \
           -out=tfplan
 
       - name: Terraform Apply
