@@ -2,22 +2,22 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+data "aws_vpc" "existing" {
+  id = "vpc-098cc44dc4ec933d7"  # replace with your chosen VPC ID
 }
 
 resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = data.aws_vpc.existing.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 }
 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.aws_vpc.existing.id
 }
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.aws_vpc.existing.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -31,7 +31,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_security_group" "strapi_sg" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.aws_vpc.existing.id
 
   ingress {
     from_port   = 22
