@@ -23,20 +23,8 @@ data "aws_internet_gateway" "existing" {
   }
 }
 
-# Route table
-resource "aws_route_table" "public" {
-  vpc_id = data.aws_vpc.existing.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = data.aws_internet_gateway.existing.id
-  }
-}
-
-# Associate route table with first existing subnet
-resource "aws_route_table_association" "public" {
-  subnet_id      = data.aws_subnets.existing.ids[0]
-  route_table_id = aws_route_table.public.id
+data "aws_route_table" "existing" {
+  subnet_id = data.aws_subnets.existing.ids[0]
 }
 
 # Security Group
