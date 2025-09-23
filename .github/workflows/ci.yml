@@ -51,3 +51,12 @@ jobs:
           docker push $FULL_REPO
 
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Trigger Terraform Deploy
+        uses: peter-evans/workflow-dispatch@v1
+        with:
+          workflow: Terraform Deploy
+          ref: main
+          inputs:image_tag: ${{ env.IMAGE_TAG }}
+
+
