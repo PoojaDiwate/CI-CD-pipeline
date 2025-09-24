@@ -23,6 +23,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Download image tag artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: image_tag
+          path: .
+
+      - name: Set IMAGE_TAG env
+        run: echo "IMAGE_TAG=$(cat image_tag.txt)" >> $GITHUB_ENV
 
       - name: Terraform Init
         run: terraform -chdir=terraform init
@@ -32,10 +40,8 @@ jobs:
           terraform -chdir=terraform plan \
           -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
-          -var="image_tag=${{ vars.LATEST_IMAGE_TAG }}" \
+          -var="image_tag=${IMAGE_TAG}" \
           -out=tfplan
-
-
 
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve tfplan

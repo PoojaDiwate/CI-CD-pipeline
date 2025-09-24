@@ -37,7 +37,6 @@ jobs:
             docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Build, tag and push Docker image
-        id: build_image
         run: |
           IMAGE_TAG=${GITHUB_SHA::7}
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
@@ -48,14 +47,11 @@ jobs:
           docker tag ${{ env.ECR_REPOSITORY }}:$IMAGE_TAG $FULL_REPO
           docker push $FULL_REPO
 
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          
-      - name: Save image tag to GitHub environment
-        run: |
-          gh variable set LATEST_IMAGE_TAG --body "$IMAGE_TAG"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Save the image tag to a file
+          echo $IMAGE_TAG > image_tag.txt
 
-
-      
-
+      - name: Upload image tag artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image_tag
+          path: image_tag.txt
