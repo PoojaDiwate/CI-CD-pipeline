@@ -63,35 +63,30 @@ resource "aws_instance" "strapi_server_pooja" {
 
    user_data = <<-EOF
               #!/bin/bash
-              set -e
-
-              # Update system
+              # Update and install dependencies
               apt-get update -y
-              apt-get upgrade -y
+              apt-get install -y docker.io awscli curl unzip
 
-              # Install dependencies
-              apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-
-              # Add Docker’s official GPG key and repo
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-              echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-
-              # Install Docker
-              apt-get update -y
-              apt-get install -y docker-ce docker-ce-cli containerd.io awscli
-
-              # Start Docker service
+              # Start Docker
               systemctl start docker
               systemctl enable docker
-
-              # Allow ubuntu user to use Docker without sudo
-              usermod -aG docker ubuntu
 
               # Login to ECR
               aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com
 
-              # Run Strapi container
-              docker run -d -p 1337:1337 ${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_repo}:${var.image_tag}
+              # Pull Docker image
+              docker pull ${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_repo}:${var.image_tag}
+
+              # Remove old container if exists
+              docker rm -f strapi-app || true
+
+              # Run container with environment variables
+              docker run -d -p 1337:1337 --name strapi-app \
+                -e APP_KEYS="$(openssl rand -base64 32),$(openssl rand -base64 32)" \
+                -e API_TOKEN_SALT="$(openssl rand -base64 32)" \
+                -e ADMIN_JWT_SECRET="$(openssl rand -base64 32)" \
+                -e JWT_SECRET="$(openssl rand -base64 32)" \
+                ${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_repo}:${var.image_tag}
               EOF
 
   tags = {
