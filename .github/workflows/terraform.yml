@@ -32,8 +32,9 @@ jobs:
           terraform -chdir=terraform plan \
           -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
-          -var="image_tag=${{ github.event.inputs.image_tag }}" \
+          -var="image_tag=${{ vars.LATEST_IMAGE_TAG }}" \
           -out=tfplan
+
 
 
       - name: Terraform Apply

@@ -11,8 +11,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.build_image.outputs.image_tag }}
 
     steps:
       - name: Checkout code
@@ -51,6 +49,13 @@ jobs:
           docker push $FULL_REPO
 
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          
+      - name: Save image tag to GitHub environment
+        run: |
+          gh variable set LATEST_IMAGE_TAG --body "$IMAGE_TAG"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       
 
