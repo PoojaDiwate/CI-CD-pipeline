@@ -99,31 +99,24 @@ resource "aws_ecs_cluster" "strapi_cluster" {
 # ---------------------------
 # IAM Role for Task Execution
 # ---------------------------
-resource "aws_iam_role" "ec2_ecr_full_access_role" {
-  name = "ec2_ecr_full_access_role"
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecs-task-execution-role"
+
   assume_role_policy = jsonencode({
-    Version = "2012-10-17",
+    Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow",
-      Principal = { Service = "ec2.amazonaws.com" },
-      Action   = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
     }]
   })
 }
- 
-resource "aws_iam_role_policy_attachment" "ecr_full" {
-  role       = aws_iam_role.ec2_ecr_full_access_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
-}
- 
-resource "aws_iam_role_policy_attachment" "ec2_full" {
-  role       = aws_iam_role.ec2_ecr_full_access_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-}
- 
-resource "aws_iam_role_policy_attachment" "ssm_core" {
-  role       = aws_iam_role.ec2_ecr_full_access_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 # ---------------------------
 # ECS Task Definition
