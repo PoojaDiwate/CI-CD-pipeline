@@ -28,15 +28,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Init
-        run: terraform -chdir=terraform init
+        run: terraform -chdir=terraform-ecs-fargate init
 
       - name: Terraform Plan
         run: |
-          terraform -chdir=terraform plan \
+          terraform -chdir=terraform-ecs-fargate plan \
           -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
           -var="image_tag=${{ github.event.inputs.image_tag }}" \
           -out=tfplan
 
       - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve tfplan
+        run: terraform -chdir=terraform-ecs-fargate apply -auto-approve tfplan

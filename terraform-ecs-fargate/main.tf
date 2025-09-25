@@ -20,7 +20,7 @@ data "aws_subnets" "default" {
 # Security Group
 # ---------------------------
 resource "aws_security_group" "strapi_sg" {
-  name        = "strapi-sg"
+  name        = "pooja-strapi-sg"
   description = "Allow HTTP for Strapi"
   vpc_id      = data.aws_vpc.default.id
 
@@ -53,7 +53,7 @@ resource "aws_security_group" "strapi_sg" {
 # ALB + Target Group + Listener
 # ---------------------------
 resource "aws_lb" "strapi_alb" {
-  name               = "strapi-alb"
+  name               = "pooja-strapi-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.strapi_sg.id]
@@ -61,7 +61,7 @@ resource "aws_lb" "strapi_alb" {
 }
 
 resource "aws_lb_target_group" "strapi_tg" {
-  name     = "strapi-tg"
+  name     = "pooja-strapi-tg"
   port     = 1337
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.default.id
@@ -93,32 +93,38 @@ resource "aws_lb_listener" "strapi_listener" {
 # ECS Cluster
 # ---------------------------
 resource "aws_ecs_cluster" "strapi_cluster" {
-  name = "strapi-cluster"
+  name = "pooja-strapi-cluster"
 }
 
 # ---------------------------
 # IAM Role for Task Execution
 # ---------------------------
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-
+resource "aws_iam_role" "ec2_ecr_full_access_role" {
+  name = "ec2_ecr_full_access_role"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
+      Effect = "Allow",
+      Principal = { Service = "ec2.amazonaws.com" },
+      Action   = "sts:AssumeRole"
     }]
   })
 }
-
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+ 
+resource "aws_iam_role_policy_attachment" "ecr_full" {
+  role       = aws_iam_role.ec2_ecr_full_access_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
 }
-
+ 
+resource "aws_iam_role_policy_attachment" "ec2_full" {
+  role       = aws_iam_role.ec2_ecr_full_access_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+}
+ 
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+  role       = aws_iam_role.ec2_ecr_full_access_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 # ---------------------------
 # ECS Task Definition
 # ---------------------------
@@ -143,7 +149,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
         }
       ]
       environment = [
-        { name = "APP_KEYS", value = "myKeyA,myKeyB" },
+        { name = "APP_KEYS", value = "key1,key2" },
         { name = "API_TOKEN_SALT", value = "mySalt" },
         { name = "ADMIN_JWT_SECRET", value = "myAdminSecret" },
         { name = "JWT_SECRET", value = "myJwtSecret" }
@@ -156,7 +162,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
 # ECS Service
 # ---------------------------
 resource "aws_ecs_service" "strapi_service" {
-  name            = "strapi-service"
+  name            = "pooja-strapi-service"
   cluster         = aws_ecs_cluster.strapi_cluster.id
   task_definition = aws_ecs_task_definition.strapi_task.arn
   desired_count   = 1
