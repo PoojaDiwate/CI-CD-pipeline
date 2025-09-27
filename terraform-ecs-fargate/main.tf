@@ -169,7 +169,7 @@ resource "aws_ecs_service" "strapi_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.strapi_tg.arn
+    target_group_arn = aws_lb_target_group.strapi_tg_new.arn
     container_name   = "strapi"
     container_port   = 1337
   }
