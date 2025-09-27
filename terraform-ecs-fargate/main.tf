@@ -60,7 +60,7 @@ resource "aws_lb" "strapi_alb" {
   subnets            = data.aws_subnets.default.ids
 }
 
-resource "aws_lb_target_group" "strapi_tg" {
+resource "aws_lb_target_group" "strapi_tg_new" {
   name        = "pooja-strapi-tg-2"
   port        = 1337
   protocol    = "HTTP"
@@ -86,7 +86,7 @@ resource "aws_lb_listener" "strapi_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.strapi_tg.arn
+    target_group_arn = aws_lb_target_group.strapi_tg_new.arn
   }
 }
 
@@ -169,7 +169,7 @@ resource "aws_ecs_service" "strapi_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.strapi_tg.arn
+    target_group_arn = aws_lb_target_group.strapi_tg_new.arn
     container_name   = "strapi"
     container_port   = 1337
   }
