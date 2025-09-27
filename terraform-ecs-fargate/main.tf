@@ -99,7 +99,7 @@ resource "aws_ecs_cluster" "strapi_cluster" {
 # ---------------------------
 # IAM Role for Task Execution
 # ---------------------------
-resource "aws_iam_role" "ecs_task_execution_role" {
+/*resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs-task-execution-role-Strapi"
 
   assume_role_policy = jsonencode({
@@ -117,7 +117,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
+}*/
 # ---------------------------
 # ECS Task Definition
 # ---------------------------
@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = arn:aws:iam::145065858967:role/ecs-task-execution-role
 
   container_definitions = jsonencode([
     {
