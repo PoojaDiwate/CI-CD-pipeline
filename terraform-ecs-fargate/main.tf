@@ -86,7 +86,7 @@ resource "aws_lb_listener" "strapi_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.strapi_tg.arn
+    target_group_arn = aws_lb_target_group.strapi_tg_new.arn
   }
 }
 
