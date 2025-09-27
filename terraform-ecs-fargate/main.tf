@@ -61,10 +61,11 @@ resource "aws_lb" "strapi_alb" {
 }
 
 resource "aws_lb_target_group" "strapi_tg" {
-  name     = "pooja-strapi-tg"
-  port     = 1337
-  protocol = "HTTP"
-  vpc_id   = data.aws_vpc.default.id
+  name        = "pooja-strapi-tg-2"
+  port        = 1337
+  protocol    = "HTTP"
+  target_type = "ip"       # <-- must be "ip" for awsvpc / Fargate
+  vpc_id      = data.aws_vpc.default.id
 
   health_check {
     path                = "/"
@@ -127,12 +128,12 @@ resource "aws_ecs_task_definition" "strapi_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn = "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi"
+  execution_role_arn = "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi" #existing IAM role arn
 
   container_definitions = jsonencode([
     {
       name      = "strapi"
-      image     = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-strapi-app:latest"
+      image     = "145065858967.dkr.ecr.ap-south-1.amazonaws.com/strapi-app-pooja:latest"
       essential = true
       portMappings = [
         {
