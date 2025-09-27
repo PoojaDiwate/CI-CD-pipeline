@@ -152,6 +152,12 @@ resource "aws_ecs_task_definition" "strapi_task" {
   ])
 }
 
+# Attach AmazonECSTaskExecutionRolePolicy to the existing role
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_ecr" {
+  role       = "ecs-task-execution-role-Strapi" # existing IAM role
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
 # ---------------------------
 # ECS Service
 # ---------------------------
