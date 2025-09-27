@@ -68,15 +68,15 @@ resource "aws_lb_target_group" "strapi_tg_new" {
   vpc_id      = data.aws_vpc.default.id
 
   health_check {
-    path                = "/"
-    port                = "1337"
-    protocol            = "HTTP"
-    matcher             = "200-399"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
+  path                = "/"
+  port                = "traffic-port"   # Use the port mapped by TG/ECS
+  protocol            = "HTTP"
+  matcher             = "200-399"
+  interval            = 30
+  timeout             = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 5   # Give Strapi a bit more retries to start
+}
 }
 
 resource "aws_lb_listener" "strapi_listener" {
@@ -133,7 +133,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
   container_definitions = jsonencode([
     {
       name      = "strapi"
-      image     = "145065858967.dkr.ecr.ap-south-1.amazonaws.com/strapi-app-pooja:latest"
+      image     = "145065858967.dkr.ecr.ap-south-1.amazonaws.com/strapi-app-pooja:cbd533c"
       essential = true
       portMappings = [
         {
