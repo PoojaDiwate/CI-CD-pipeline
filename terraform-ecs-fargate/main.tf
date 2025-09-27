@@ -100,7 +100,7 @@ resource "aws_ecs_cluster" "strapi_cluster" {
 # IAM Role for Task Execution
 # ---------------------------
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs-task-execution-role"
+  name = "ecs-task-execution-role-Strapi"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
