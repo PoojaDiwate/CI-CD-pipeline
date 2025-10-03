@@ -46,19 +46,19 @@ resource "aws_lb_target_group" "strapi_tg_new" {
   name        = "pooja-strapi-tg-2"
   port        = 1337
   protocol    = "HTTP"
-  target_type = "ip"       # <-- must be "ip" for awsvpc / Fargate
+  target_type = "ip" # <-- must be "ip" for awsvpc / Fargate
   vpc_id      = data.aws_vpc.default.id
 
   health_check {
-  path                = "/"
-  #port                = "traffic-port"   Use the port mapped by TG/ECS
-  protocol            = "HTTP"
-  matcher             = "200-399"
-  interval            = 30
-  timeout             = 5
-  healthy_threshold   = 2
-  unhealthy_threshold = 5   # Give Strapi a bit more retries to start
-}
+    path = "/"
+    #port                = "traffic-port"   Use the port mapped by TG/ECS
+    protocol            = "HTTP"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 5 # Give Strapi a bit more retries to start
+  }
 }
 
 resource "aws_lb_listener" "strapi_listener" {

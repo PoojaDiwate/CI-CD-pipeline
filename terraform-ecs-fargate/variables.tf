@@ -13,16 +13,16 @@ variable "ecr_repo" {
   type        = string
 }
 
-variable "log_group_name" { 
-  type = string 
-  default = "/ecs/strapi" 
+variable "log_group_name" {
+  type    = string
+  default = "/ecs/strapi"
 }
 
-variable "service_name" { 
-  type = string 
-  default = "strapi-service" 
+variable "service_name" {
+  type    = string
+  default = "strapi-service"
 }
 
-variable "aws_region" { 
-  type = string 
+variable "aws_region" {
+  type = string
 }
