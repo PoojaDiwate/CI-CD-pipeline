@@ -4,7 +4,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn = "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi" #existing IAM role arn
+  execution_role_arn       = "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi" #existing IAM role arn
 
   container_definitions = jsonencode([
     {
