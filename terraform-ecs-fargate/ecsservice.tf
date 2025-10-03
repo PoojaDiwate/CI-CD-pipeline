@@ -1,4 +1,16 @@
 # ---------------------------
+# ECS Cluster
+# ---------------------------
+resource "aws_ecs_cluster" "strapi_cluster" {
+  name = "pooja-strapi-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+# ---------------------------
 # ECS Service
 # ---------------------------
 resource "aws_ecs_service" "strapi_service" {
