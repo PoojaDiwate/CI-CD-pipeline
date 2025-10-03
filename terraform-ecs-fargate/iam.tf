@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_ecr" {
 }
 
 # Minimal CloudWatch Logs permissions (attach)
-resource "aws_iam_policy" "cwlogs_policy" {
+/*resource "aws_iam_policy" "cwlogs_policy" {
   name        = "ecs-exec-cloudwatch-logs"
   description = "Allow ECS tasks to write CloudWatch Logs"
   policy = jsonencode({
@@ -46,7 +46,7 @@ resource "aws_iam_policy" "cwlogs_policy" {
   })
 }
 
-/*resource "aws_iam_role_policy_attachment" "exec_cwlogs_attach" {
+resource "aws_iam_role_policy_attachment" "exec_cwlogs_attach" {
   role       = "ecs-task-execution-role-Strapi"
   policy_arn = aws_iam_policy.cwlogs_policy.arn
 }*/
