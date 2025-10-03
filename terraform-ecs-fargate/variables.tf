@@ -12,3 +12,8 @@ variable "ecr_repo" {
   description = "ECR repository name"
   type        = string
 }
+
+variable "log_group_name" { 
+  type = string, 
+  default = "/ecs/strapi" 
+}

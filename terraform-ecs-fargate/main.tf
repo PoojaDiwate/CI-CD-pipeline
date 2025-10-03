@@ -1,4 +1,4 @@
-provider "aws" {
+/*provider "aws" {
   region = "ap-south-1"
 }
 
@@ -182,3 +182,4 @@ resource "aws_ecs_service" "strapi_service" {
 
   depends_on = [aws_lb_listener.strapi_listener]
 }
+*/
