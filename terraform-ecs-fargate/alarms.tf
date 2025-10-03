@@ -8,7 +8,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   statistic           = "Average"
   threshold           = 80
   dimensions = {
-    ClusterName = aws_ecs_cluster.strapi_cluster.name
+    ClusterName = "pooja-strapi-cluster"
     ServiceName = var.service_name
   }
   alarm_description = "Alarm when Strapi service CPU > 80%"
@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "task_count_low" {
   statistic           = "Average"
   threshold           = 1
   dimensions = {
-    ClusterName = aws_ecs_cluster.strapi_cluster.name
+    ClusterName = "pooja-strapi-cluster"
     ServiceName = var.service_name
   }
   alarm_description = "Alert if no tasks running"
