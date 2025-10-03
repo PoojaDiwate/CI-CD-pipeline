@@ -100,7 +100,7 @@ resource "aws_ecs_cluster" "strapi_cluster" {
 # ---------------------------
 # IAM Role for Task Execution
 # ---------------------------
-/*resource "aws_iam_role" "ecs_task_execution_role" {
+resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs-task-execution-role-Strapi"
 
   assume_role_policy = jsonencode({
@@ -118,7 +118,7 @@ resource "aws_ecs_cluster" "strapi_cluster" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}*/
+}
 # ---------------------------
 # ECS Task Definition
 # ---------------------------

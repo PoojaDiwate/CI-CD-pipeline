@@ -8,12 +8,23 @@ variable "aws_account_id" {
   type        = string
 }
 
+variable "aws_region" { 
+  type = string }
+
 variable "ecr_repo" {
   description = "ECR repository name"
   type        = string
 }
 
 variable "log_group_name" { 
-  type = string, 
+  type = string 
   default = "/ecs/strapi" 
 }
+
+variable "service_name" { 
+  type = string, 
+  default = "strapi-service" 
+}
+
+variable "aws_region" { 
+  type = string }
