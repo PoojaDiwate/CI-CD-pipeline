@@ -46,7 +46,7 @@ resource "aws_iam_policy" "cwlogs_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "exec_cwlogs_attach" {
+/*resource "aws_iam_role_policy_attachment" "exec_cwlogs_attach" {
   role       = "ecs-task-execution-role-Strapi"
   policy_arn = aws_iam_policy.cwlogs_policy.arn
-}
+}*/
