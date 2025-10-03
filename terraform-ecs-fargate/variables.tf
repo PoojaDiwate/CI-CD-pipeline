@@ -9,7 +9,8 @@ variable "aws_account_id" {
 }
 
 variable "aws_region" { 
-  type = string }
+  type = string 
+}
 
 variable "ecr_repo" {
   description = "ECR repository name"
@@ -27,4 +28,5 @@ variable "service_name" {
 }
 
 variable "aws_region" { 
-  type = string }
+  type = string 
+}
