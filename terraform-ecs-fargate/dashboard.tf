@@ -11,7 +11,7 @@ resource "aws_cloudwatch_dashboard" "strapi" {
           region = var.aws_region,
           title = "Service CPU Utilization",
           metrics = [
-            ["AWS/ECS","CPUUtilization","ClusterName", aws_ecs_cluster.strapi_cluster.name, "ServiceName", var.service_name]
+            ["AWS/ECS","CPUUtilization","ClusterName", "pooja-strapi-cluster", "ServiceName", "pooja-strapi-service"]
           ],
           period = 60,
           stat = "Average"
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_dashboard" "strapi" {
           region = var.aws_region,
           title = "Service Memory Utilization",
           metrics = [
-            ["AWS/ECS","MemoryUtilization","ClusterName", aws_ecs_cluster.strapi_cluster.name, "ServiceName", var.service_name]
+            ["AWS/ECS","MemoryUtilization","ClusterName", "pooja-strapi-cluster", "ServiceName", "pooja-strapi-service"]
           ],
           period = 60,
           stat = "Average"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_dashboard" "strapi" {
           region = var.aws_region,
           title = "Running Task Count",
           metrics = [
-            ["AWS/ECS","RunningTaskCount","ClusterName", aws_ecs_cluster.strapi_cluster.name, "ServiceName", var.service_name]
+            ["AWS/ECS","RunningTaskCount","ClusterName", "pooja-strapi-cluster", "ServiceName", "pooja-strapi-service"]
           ],
           period = 60,
           stat = "Average"
