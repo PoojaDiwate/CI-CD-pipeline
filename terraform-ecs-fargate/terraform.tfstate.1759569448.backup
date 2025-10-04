@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.13.2",
-  "serial": 47,
+  "serial": 46,
   "lineage": "7f0847da-1443-eb6f-50b2-5aef00b0a270",
   "outputs": {
     "strapi_url": {
@@ -79,6 +79,42 @@
           },
           "sensitive_attributes": [],
           "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "strapi",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:logs:ap-south-1:145065858967:log-group:/ecs/strapi",
+            "id": "/ecs/strapi",
+            "kms_key_id": "",
+            "log_group_class": "STANDARD",
+            "name": "/ecs/strapi",
+            "name_prefix": "",
+            "region": "ap-south-1",
+            "retention_in_days": 30,
+            "skip_destroy": false,
+            "tags": {
+              "Project": "strapi"
+            },
+            "tags_all": {
+              "Project": "strapi"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "145065858967",
+            "name": "/ecs/strapi",
+            "region": "ap-south-1"
+          },
+          "private": "bnVsbA=="
         }
       ]
     },

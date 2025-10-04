@@ -15,7 +15,7 @@ variable "ecr_repo" {
 
 variable "log_group_name" {
   type    = string
-  default = "/ecs/strapi"
+  default = "/ecs/strapi-pooja"
 }
 
 variable "service_name" {
