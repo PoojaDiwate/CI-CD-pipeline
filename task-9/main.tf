@@ -20,7 +20,7 @@ data "aws_subnets" "default" {
 # Security Group
 # ---------------------------
 resource "aws_security_group" "strapi_sg" {
-  name        = "pooja-strapi-sg"
+  name        = "pooja-strapi-sg_new"
   description = "Allow HTTP for Strapi"
   vpc_id      = data.aws_vpc.default.id
 
@@ -61,7 +61,7 @@ resource "aws_lb" "strapi_alb" {
 }
 
 resource "aws_lb_target_group" "strapi_tg_new" {
-  name        = "pooja-strapi-tg-2"
+  name        = "pooja-strapi-tg-3"
   port        = 1337
   protocol    = "HTTP"
   target_type = "ip"       # <-- must be "ip" for awsvpc / Fargate
