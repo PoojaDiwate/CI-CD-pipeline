@@ -53,7 +53,7 @@ resource "aws_security_group" "strapi_sg" {
 # ALB + Target Group + Listener
 # ---------------------------
 resource "aws_lb" "strapi_alb" {
-  name               = "pooja-strapi-alb"
+  name               = "pooja-strapi-alb-new"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.strapi_sg.id]
