@@ -31,20 +31,6 @@ resource "aws_cloudwatch_dashboard" "strapi" {
           stat = "Average"
         }
       },
-      {
-        type = "metric",
-        x = 0, y = 6, width = 24, height = 6,
-        properties = {
-          view = "timeSeries",
-          region = var.aws_region,
-          title = "Running Task Count",
-          metrics = [
-            ["AWS/ECS","RunningTaskCount","ClusterName", "pooja-strapi-cluster", "ServiceName", "pooja-strapi-service"]
-          ],
-          period = 60,
-          stat = "Average"
-        }
-      }
     ]
   })
 }
