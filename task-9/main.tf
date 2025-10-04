@@ -95,6 +95,10 @@ resource "aws_lb_listener" "strapi_listener" {
 # ---------------------------
 resource "aws_ecs_cluster" "strapi_cluster" {
   name = "pooja-strapi-cluster"
+}
+  
+resource "aws_ecs_cluster_capacity_providers" "strapi_cluster_capacity" {
+  cluster_name = aws_ecs_cluster.strapi_cluster.name
 
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
 
@@ -103,6 +107,7 @@ resource "aws_ecs_cluster" "strapi_cluster" {
     weight            = 1
   }
 }
+
 
 # ---------------------------
 # IAM Role for Task Execution
