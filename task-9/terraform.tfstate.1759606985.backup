@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.13.2",
-  "serial": 7,
+  "serial": 6,
   "lineage": "a80549c6-4155-24d5-f6c7-c828551c875b",
   "outputs": {},
   "resources": [
@@ -137,6 +137,39 @@
           "dependencies": [
             "aws_ecs_cluster.strapi_cluster"
           ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "ecs_task_execution_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi-1",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2025-10-04T18:43:15Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "ecs-task-execution-role-Strapi-1",
+            "inline_policy": [],
+            "managed_policy_arns": [],
+            "max_session_duration": 3600,
+            "name": "ecs-task-execution-role-Strapi-1",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": null,
+            "tags_all": null,
+            "unique_id": "AROASDRUZK6LR6KLMNVV5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
         }
       ]
     }
