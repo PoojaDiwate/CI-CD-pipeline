@@ -196,7 +196,7 @@ resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
 }
 
 resource "aws_codedeploy_app" "ecs_app" {
-  name             = "strapi-codedeploy-app-01"
+  name             = "strapi-codedeploy-app"
   compute_platform = "ECS"
 }
 
