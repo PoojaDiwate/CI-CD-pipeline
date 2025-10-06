@@ -1,20 +1,18 @@
-variable "region" {
-  default = "ap-south-1"
+variable "image_tag" {
+  description = "Docker image tag to deploy"
+  type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC where ALB and ECS are created"
+variable "aws_account_id" {
+  description = "AWS account ID"
+  type        = string
 }
 
-variable "subnet_ids" {
-  type        = list(string)
-  description = "List of public subnets for ECS tasks and ALB"
+variable "aws_region" {
+  type = string
 }
 
-variable "ecs_task_execution_role_arn" {
-  description = "Existing ECS Task Execution Role ARN"
-}
-
-variable "image_url" {
-  description = "ECR image URL for Strapi app"
+variable "ecr_repo" {
+  description = "ECR repository name"
+  type        = string
 }

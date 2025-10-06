@@ -5,15 +5,29 @@ provider "aws" {
   region = var.region
 }
 
-#########################################
+# ---------------------------
+# Get default VPC & subnets
+# ---------------------------
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+# --------------------------------------
 # SECURITY GROUPS
-#########################################
+# --------------------------------------
 
 # ALB SG
 resource "aws_security_group" "alb_sg" {
   name        = "strapi-alb-sg-01"
   description = "Allow HTTP and HTTPS traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_vpc.default.id
 
   ingress {
     from_port   = 80
@@ -41,7 +55,7 @@ resource "aws_security_group" "alb_sg" {
 resource "aws_security_group" "ecs_sg" {
   name        = "strapi-ecs-sg-01"
   description = "Allow ALB traffic on port 1337"
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_vpc.default.id
 
   ingress {
     from_port       = 1337
@@ -64,7 +78,7 @@ resource "aws_security_group" "ecs_sg" {
 resource "aws_lb" "strapi_alb" {
   name               = "strapi-alb-01"
   load_balancer_type = "application"
-  subnets            = var.subnet_ids
+  subnets            = data.aws_subnets.default.ids
   security_groups    = [aws_security_group.alb_sg.id]
 }
 
@@ -72,7 +86,7 @@ resource "aws_lb_target_group" "strapi_tg_blue" {
   name     = "strapi-tg-blue"
   port     = 1337
   protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  vpc_id   = data.aws_vpc.default.id
   target_type = "ip"
   health_check {
     path = "/"
@@ -83,7 +97,7 @@ resource "aws_lb_target_group" "strapi_tg_green" {
   name     = "strapi-tg-green"
   port     = 1337
   protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  vpc_id   = data.aws_vpc.default.id
   target_type = "ip"
   health_check {
     path = "/"
@@ -114,7 +128,7 @@ resource "aws_ecs_task_definition" "strapi_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = var.ecs_task_execution_role_arn
+  execution_role_arn       = "arn:aws:iam::145065858967:role/ecs-task-execution-role-Strapi"
 
   container_definitions = jsonencode([
     {
@@ -142,7 +156,7 @@ resource "aws_ecs_service" "strapi_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = var.subnet_ids
+    subnets         = data.aws_subnets.default.ids
     security_groups = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }
