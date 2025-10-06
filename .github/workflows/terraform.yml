@@ -1,4 +1,4 @@
-name: Terraform Deploy
+name: Terraform Blue Green Deployment
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Init
-        run: terraform -chdir=terraform-ecs-fargate init
+        run: terraform -chdir=task-10 init
 
       - name: Terraform Plan
         run: |
-          terraform -chdir=terraform-ecs-fargate plan \
+          terraform -chdir=task-10 plan \
           -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
           -var="ecr_repo=${{ secrets.ECR_REPO }}" \
           -var="image_tag=${{ github.event.inputs.image_tag }}" \
           -out=tfplan
 
       - name: Terraform Apply
-        run: terraform -chdir=terraform-ecs-fargate apply -auto-approve tfplan
+        run: terraform -chdir=task-10 apply -auto-approve tfplan
