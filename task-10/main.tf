@@ -176,7 +176,7 @@ resource "aws_ecs_service" "strapi_service" {
 # CODEDEPLOY ROLE + APP + DEPLOYMENT GROUP
 #########################################
 
-resource "aws_iam_role" "codedeploy_role" {
+/*resource "aws_iam_role" "codedeploy_role" {
   name = "ecs-codedeploy-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -188,7 +188,7 @@ resource "aws_iam_role" "codedeploy_role" {
       }
     }]
   })
-}
+}*/
 
 resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
   role       = aws_iam_role.codedeploy_role.name
