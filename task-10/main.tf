@@ -196,14 +196,14 @@ resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
 }
 
 resource "aws_codedeploy_app" "ecs_app" {
-  name             = "strapi-codedeploy-app"
+  name             = "strapi-codedeploy-app-01"
   compute_platform = "ECS"
 }
 
 resource "aws_codedeploy_deployment_group" "ecs_deploy_group" {
   app_name               = aws_codedeploy_app.ecs_app.name
   deployment_group_name  = "strapi-bluegreen-dg"
-  service_role_arn       = arn:aws:iam::145065858967:role/ecs-codedeploy-role
+  service_role_arn       = "arn:aws:iam::145065858967:role/ecs-codedeploy-role"
   deployment_config_name = "CodeDeployDefault.ECSCanary10Percent5Minutes"
 
   auto_rollback_configuration {
