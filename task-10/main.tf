@@ -104,7 +104,7 @@ resource "aws_lb_target_group" "strapi_tg_green" {
   }
 }
 
-# Listener for production traffic (Blue)
+# ALB Listener (only one)
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.strapi_alb.arn
   port              = 80
@@ -112,19 +112,7 @@ resource "aws_lb_listener" "http_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.strapi_tg_blue.arn
-  }
-}
-
-# Listener for test traffic (Green)
-resource "aws_lb_listener" "test_listener" {
-  load_balancer_arn = aws_lb.strapi_alb.arn
-  port              = 8080
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.strapi_tg_green.arn
+    target_group_arn = aws_lb_target_group.blue_tg.arn
   }
 }
 
@@ -244,10 +232,6 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" {
     target_group_pair_info {
       prod_traffic_route {
         listener_arns = [aws_lb_listener.http_listener.arn]
-      }
-
-      test_traffic_route {
-        listener_arns = [aws_lb_listener.test_listener.arn]
       }
 
       target_group {
