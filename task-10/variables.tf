@@ -10,6 +10,7 @@ variable "aws_account_id" {
 
 variable "aws_region" {
   type = string
+  default = "ap-south-1"
 }
 
 variable "ecr_repo" {
