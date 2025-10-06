@@ -249,7 +249,7 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" {
       }
 
       target_group {
-        name = aws_lb_target_group.strapi_tg_blue.name
+        name = aws_lb_target_group.strapi_tg_green.name
       }
     }
   }
