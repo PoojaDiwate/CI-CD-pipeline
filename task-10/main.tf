@@ -181,7 +181,7 @@ resource "aws_ecs_service" "strapi_service" {
   }
 
   deployment_controller {
-    type = "ECS"
+    type = "CODE_DEPLOY"
   }
 }
 
